@@ -1,15 +1,11 @@
 import time
 import random
-import sys
 
 
+# ---------------- Interpolation Search ----------------
 def interpolation_search(arr, target):
-    """
-    Interpolation Search Algorithm
-    Time Complexity: O(log log n) average, O(n) worst case
-    Space Complexity: O(1)
-    """
-    low, high = 0, len(arr) - 1
+    low = 0
+    high = len(arr) - 1
     comparisons = 0
 
     while low <= high and arr[low] <= target <= arr[high]:
@@ -20,11 +16,9 @@ def interpolation_search(arr, target):
                 return low, comparisons
             return -1, comparisons
 
-        # Prevent division by zero
         if arr[high] == arr[low]:
             break
 
-        # Interpolation formula
         pos = low + int(
             ((target - arr[low]) * (high - low))
             / (arr[high] - arr[low])
@@ -40,13 +34,10 @@ def interpolation_search(arr, target):
     return -1, comparisons
 
 
+# ---------------- Binary Search ----------------
 def binary_search(arr, target):
-    """
-    Binary Search Algorithm
-    Time Complexity: O(log n)
-    Space Complexity: O(1)
-    """
-    low, high = 0, len(arr) - 1
+    low = 0
+    high = len(arr) - 1
     comparisons = 0
 
     while low <= high:
@@ -63,72 +54,68 @@ def binary_search(arr, target):
     return -1, comparisons
 
 
+# ---------------- Performance Analysis ----------------
 def performance_analysis():
-    """
-    Compare the performance of Interpolation Search
-    and Binary Search on arrays of different sizes.
-    """
+    print("\nPerformance Comparison")
+    print("=" * 75)
+
     sizes = [1000, 5000, 10000, 50000, 100000]
 
-    print(
-        f"{'Size':>10} {'IS Time(ms)':>14} {'BS Time(ms)':>14} "
-        f"{'IS Comparisons':>16} {'BS Comparisons':>16}"
-    )
+    print(f"{'Size':<10}{'IS Time(ms)':<15}{'BS Time(ms)':<15}"
+          f"{'IS Comp':<15}{'BS Comp':<15}")
     print("-" * 75)
 
     for size in sizes:
-        # Generate sorted unique array
         arr = sorted(random.sample(range(size * 10), size))
+        target = random.choice(arr)
 
-        # Select a random target from the array
-        target = arr[random.randint(0, size - 1)]
-
-        # Interpolation Search timing (average of 100 runs)
         start = time.perf_counter()
         for _ in range(100):
-            idx_is, comp_is = interpolation_search(arr, target)
+            _, is_comp = interpolation_search(arr, target)
         is_time = (time.perf_counter() - start) / 100 * 1000
 
-        # Binary Search timing (average of 100 runs)
         start = time.perf_counter()
         for _ in range(100):
-            idx_bs, comp_bs = binary_search(arr, target)
+            _, bs_comp = binary_search(arr, target)
         bs_time = (time.perf_counter() - start) / 100 * 1000
 
-        print(
-            f"{size:>10} "
-            f"{is_time:>14.6f} "
-            f"{bs_time:>14.6f} "
-            f"{comp_is:>16} "
-            f"{comp_bs:>16}"
-        )
+        print(f"{size:<10}{is_time:<15.6f}{bs_time:<15.6f}"
+              f"{is_comp:<15}{bs_comp:<15}")
 
 
 # ---------------- Main Program ----------------
+def main():
+    print("=" * 50)
+    print(" SEARCH ALGORITHM COMPARISON ")
+    print("=" * 50)
+
+    arr = list(map(int, input("\nEnter sorted array elements: ").split()))
+    target = int(input("Enter target element: "))
+
+    print("\nInterpolation Search")
+    print("-" * 25)
+    idx1, comp1 = interpolation_search(arr, target)
+
+    if idx1 != -1:
+        print(f"Element found at index : {idx1}")
+    else:
+        print("Element not found.")
+
+    print(f"Comparisons : {comp1}")
+
+    print("\nBinary Search")
+    print("-" * 25)
+    idx2, comp2 = binary_search(arr, target)
+
+    if idx2 != -1:
+        print(f"Element found at index : {idx2}")
+    else:
+        print("Element not found.")
+
+    print(f"Comparisons : {comp2}")
+
+    performance_analysis()
+
 
 if __name__ == "__main__":
-
-    # Sample array
-    arr = [2, 5, 10, 15, 23, 35, 48, 60, 75, 90, 105, 120]
-    target = 35
-
-    # Interpolation Search Example
-    idx, comps = interpolation_search(arr, target)
-
-    print("Interpolation Search Example")
-    print("----------------------------")
-    print(f"Array: {arr}")
-    print(f"Searching for: {target}")
-
-    if idx != -1:
-        print(f"Element found at index: {idx}")
-    else:
-        print("Element not found")
-
-    print(f"Comparisons: {comps}")
-    print()
-
-    # Performance Analysis
-    print("Performance Analysis")
-    print("====================")
-    performance_analysis()
+    main()
